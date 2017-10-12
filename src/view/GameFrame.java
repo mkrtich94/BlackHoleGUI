@@ -1,15 +1,12 @@
 package view;
 
 import controller.GameBoard;
+import controller.MediaPlayer;
 import model.Colors;
 import model.Tile;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 public class GameFrame extends JFrame {
     private static final int HEIGHT = 800;
@@ -17,6 +14,7 @@ public class GameFrame extends JFrame {
     public GameBoard board;
     public MenuPanel menuPanel;
     public GamePanel gamePanel;
+    private MediaPlayer mediaPlayer;
 
     public GameFrame() throws HeadlessException {
         ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
@@ -26,7 +24,9 @@ public class GameFrame extends JFrame {
         this.setResizable(true);
         this.setLocationRelativeTo(null);
         this.setBackground(Color.white);
-        this.getContentPane().add(this.gamePanel = new GamePanel(this));
+        mediaPlayer = new MediaPlayer();
+        this.setLayeredPane(this.gamePanel = new GamePanel(this));
+//        this.getContentPane().add(this.gamePanel = new GamePanel(this));
         this.menuPanel = new MenuPanel(this);
         this.setGlassPane(this.menuPanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,21 +49,13 @@ public class GameFrame extends JFrame {
         this.setJMenuBar(menuBar);
     }
 
-    public void playSound() {
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResource("menu.wav"));
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.start();
-        } catch(Exception ex) {
-            System.out.println("Error with playing sound.");
-            ex.printStackTrace();
-        }
-    }
-
     public void showMenu() {
         this.menuPanel.setVisible(true);
-        this.playSound();
+        this.getMediaPlayer().play(0);
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return this.mediaPlayer;
     }
 
     public void createBoard() {

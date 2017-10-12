@@ -8,7 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Random;
 
-public class GamePanel extends JPanel {
+public class GamePanel extends JLayeredPane {
     public GameFrame frame;
 
     public GamePanel(GameFrame frame) {
@@ -18,23 +18,32 @@ public class GamePanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent event) {
                 super.mouseClicked(event);
-                if(frame.menuPanel.isVisible()) {
+                if (frame.menuPanel.isVisible()) {
                     return;
                 }
-                if(frame.board.isFinished) {
+                if (frame.board.isFinished) {
                     showMessage("Game Finished");
                     return;
                 }
                 for (Tile tile : frame.board.tileMap.values()) {
-                    if (tile.getShape().contains(event.getPoint())) {
-                        if(!tile.getIsFilled()) {
-                            frame.board.answer(frame.board.playerColor, new Random().nextInt(14)+1, tile.getLabel());
+                    if (tile.getShape().contains(event.getPoint()) && frame.board.isPlayersTurn) {
+                        if (!tile.getIsFilled()) {
+                            frame.board.isPlayersTurn = false;
+                            frame.board.answer(frame.board.playerColor, new Random().nextInt(14) + 1, tile.getLabel());
                         } else {
                             showMessage("Tile is already filled with another disc");
                         }
                         break;
                     }
                 }
+            }
+        });
+        this.add(new JButton("Next Song"), 0);
+        this.getComponent(0).addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent event) {
+                super.mouseClicked(event);
+                frame.getMediaPlayer().nextSong();
             }
         });
     }

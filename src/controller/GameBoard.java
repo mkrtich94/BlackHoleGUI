@@ -1,6 +1,7 @@
 package controller;
 
 import model.Colors;
+//import model.Disk;
 import model.Tile;
 import view.GameFrame;
 
@@ -17,6 +18,7 @@ public class GameBoard {
     public Color playerColor;
     public boolean isFinished;
     private Core game;
+    public boolean isPlayersTurn;
 //    public ArrayList<Disk> remainingDisks;
 
     public GameBoard(GameFrame gameFrame) {
@@ -77,7 +79,7 @@ public class GameBoard {
         start(isPlayerFirst);
     }
 
-    void notify(Color color, Integer number, String label) {
+    void executeCommand(Color color, Integer number, String label) {
         if (!label.equals("Quit")) {
             Tile tile = tileMap.get(label);
             tile.setFilled(true);
@@ -103,6 +105,7 @@ public class GameBoard {
             }
             // computeScore
         }
+        this.isPlayersTurn = true;
     }
 
     private void showScore(String score) {
@@ -132,8 +135,12 @@ public class GameBoard {
 
     private int getScore(Tile tile) {
         int score = 0;
-        for (Tile neighbour : neighboursMap.get(tile.getLabel())) {
-            score += neighbour.getColor().equals(Colors.RED.getColor()) ? neighbour.getNumber() : -neighbour.getNumber();
+        if(tile.getColor().equals(Color.BLACK)) {
+            for (Tile neighbour : neighboursMap.get(tile.getLabel())) {
+                if(neighbour.getNumber() != null) {
+                    score += neighbour.getColor().equals(Colors.RED.getColor()) ? neighbour.getNumber() : -neighbour.getNumber();
+                }
+            }
         }
         return score;
     }
@@ -153,15 +160,18 @@ public class GameBoard {
         tile.setFilled(true);
         tile.setNumber(number);
         tile.setColor(color);
-        game.notify(label + "=" + number);
+        game.executeCommand(label + "=" + number);
     }
 
     public void start(boolean isPlayerFirst) {
+        isPlayersTurn = isPlayerFirst;
         if (!isPlayerFirst) {
             this.playerColor = Colors.BLUE.getColor();
-            this.game.notify("Start");
+            this.game.executeCommand("Start");
         } else {
             this.playerColor = Colors.RED.getColor();
         }
+//        this.getParentFrame().add(new Disk(this.playerColor, 1));
     }
+
 }
