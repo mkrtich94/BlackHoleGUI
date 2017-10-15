@@ -1,9 +1,6 @@
 package controller;
 
-import com.sun.media.sound.DirectAudioDeviceProvider;
-
 import javax.sound.sampled.*;
-import javax.sound.sampled.spi.MixerProvider;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,7 +64,7 @@ public class MediaPlayer {
             for(int i = 1; i < new File("resources"+ File.separator+"music").listFiles().length; ++i) {
                 playlist.add(AudioSystem.getAudioInputStream(getClass().getClassLoader().getResource("music/" + i + ".wav")));
             }
-            playlist.add(AudioSystem.getAudioInputStream(getClass().getClassLoader().getResource("music/extras.wav")));
+            playlist.add(AudioSystem.getAudioInputStream(getClass().getClassLoader().getResource("music/2.wav")));
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }

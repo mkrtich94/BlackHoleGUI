@@ -2,6 +2,7 @@ package controller;
 
 import model.Colors;
 //import model.Disk;
+import model.Disk;
 import model.Tile;
 import view.GameFrame;
 
@@ -19,12 +20,10 @@ public class GameBoard {
     public boolean isFinished;
     private Core game;
     public boolean isPlayersTurn;
-//    public ArrayList<Disk> remainingDisks;
+    private DiskPane diskPane;
 
     public GameBoard(GameFrame gameFrame) {
         this.parentFrame = gameFrame;
-        Tile.setBoard(this);
-        init();
     }
 
     public GameFrame getParentFrame() {
@@ -32,6 +31,9 @@ public class GameBoard {
     }
 
     private void init() {
+        Tile.setBoard(this);
+        Disk.setBoard(this);
+        Disk.remaining = 15;
         tileMap = new HashMap<>();
         neighboursMap = new HashMap<>();
         for (int i = 0; i < 8; ++i) {
@@ -41,6 +43,7 @@ public class GameBoard {
                 neighboursMap.put(label, new ArrayList<Tile>());
             }
         }
+        this.diskPane = new DiskPane(this);
         prepareNeighboursMap();
         this.game = new Core(this);
     }
@@ -74,8 +77,6 @@ public class GameBoard {
     }
 
     public void restart(boolean isPlayerFirst) {
-        isFinished = false;
-        init();
         start(isPlayerFirst);
     }
 
@@ -94,18 +95,20 @@ public class GameBoard {
             this.parentFrame.repaint();
         }
         if (label.equals("Quit") || this.checkGameEnded()) {
-            this.parentFrame.repaint();
             for (Tile tile : this.tileMap.values()) {
                 if (!tile.getIsFilled()) {
                     tile.setColor(Color.BLACK);
-                    int score = getScore(tile);
                     isFinished = true;
-                    showScore(String.format("The Score is %d:%d", 75 + score, 75 - score));
+                    this.parentFrame.repaint();
+                    break;
                 }
             }
-            // computeScore
         }
         this.isPlayersTurn = true;
+        if(isFinished) {
+            int score = getScore();
+            showScore(String.format("The Score is %d:%d", 75 + score, 75 - score));
+        }
     }
 
     private void showScore(String score) {
@@ -127,22 +130,23 @@ public class GameBoard {
                     options, JOptionPane.YES_OPTION);
             this.restart(result == JOptionPane.YES_OPTION);
         } else {
-            isFinished = false;
-            init();
             this.parentFrame.showMenu();
         }
     }
 
-    private int getScore(Tile tile) {
+    private int getScore() {
         int score = 0;
-        if(tile.getColor().equals(Color.BLACK)) {
-            for (Tile neighbour : neighboursMap.get(tile.getLabel())) {
-                if(neighbour.getNumber() != null) {
-                    score += neighbour.getColor().equals(Colors.RED.getColor()) ? neighbour.getNumber() : -neighbour.getNumber();
+        for (Tile tile : tileMap.values()) {
+            if (tile.getColor().equals(Color.BLACK)) {
+                for (Tile neighbour : neighboursMap.get(tile.getLabel())) {
+                    if (neighbour.getNumber() != null) {
+                        score += neighbour.getColor().equals(Colors.RED.getColor()) ? neighbour.getNumber() : -neighbour.getNumber();
+                    }
                 }
+                break;
             }
         }
-        return score;
+        return  score;
     }
 
     private boolean checkGameEnded() {
@@ -155,23 +159,27 @@ public class GameBoard {
         return emptyTiles < 2;
     }
 
-    public void answer(Color color, Integer number, String label) {
+    public void answer(Disk disk, String label) {
+        this.diskPane.removeDisk();
         Tile tile = tileMap.get(label);
         tile.setFilled(true);
-        tile.setNumber(number);
-        tile.setColor(color);
-        game.executeCommand(label + "=" + number);
+        tile.setNumber(disk.getNumber());
+        tile.setColor(disk.getColor());
+        this.getParentFrame().repaint();
+        game.executeCommand(label + "=" + disk.getNumber());
     }
 
     public void start(boolean isPlayerFirst) {
         isPlayersTurn = isPlayerFirst;
+        this.playerColor = !isPlayerFirst? Colors.BLUE.getColor() : Colors.RED.getColor();
+        isFinished = false;
+        init();
         if (!isPlayerFirst) {
-            this.playerColor = Colors.BLUE.getColor();
             this.game.executeCommand("Start");
-        } else {
-            this.playerColor = Colors.RED.getColor();
         }
-//        this.getParentFrame().add(new Disk(this.playerColor, 1));
     }
 
+    public DiskPane getDiskPane() {
+        return diskPane;
+    }
 }

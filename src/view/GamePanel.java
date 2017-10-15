@@ -1,14 +1,16 @@
 package view;
 
+import model.Disk;
 import model.Tile;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.LinkedList;
 import java.util.Random;
 
-public class GamePanel extends JLayeredPane {
+public class GamePanel extends JPanel {
     public GameFrame frame;
 
     public GamePanel(GameFrame frame) {
@@ -25,42 +27,50 @@ public class GamePanel extends JLayeredPane {
                     showMessage("Game Finished");
                     return;
                 }
+                LinkedList<Disk> remainingDisks = frame.board.getDiskPane().remainingDisks;
+                for (int i = 0; i < remainingDisks.size(); i++) {
+                    Disk disk = remainingDisks.get(i);
+                    if (disk.getShape(i).contains(event.getPoint()) && frame.board.isPlayersTurn) {
+                        frame.board.getDiskPane().setSelected(disk);
+                        frame.repaint();
+                        return;
+                    }
+                }
                 for (Tile tile : frame.board.tileMap.values()) {
                     if (tile.getShape().contains(event.getPoint()) && frame.board.isPlayersTurn) {
                         if (!tile.getIsFilled()) {
-                            frame.board.isPlayersTurn = false;
-                            frame.board.answer(frame.board.playerColor, new Random().nextInt(14) + 1, tile.getLabel());
+                            Disk selectedDisk = frame.board.getDiskPane().getSelected();
+                            if(selectedDisk != null) {
+                                frame.board.isPlayersTurn = false;
+                                frame.board.answer(selectedDisk, tile.getLabel());
+                            } else {
+                                showMessage("Please select a disk");
+                            }
                         } else {
                             showMessage("Tile is already filled with another disc");
                         }
-                        break;
+                        return;
                     }
                 }
             }
         });
-        this.add(new JButton("Next Song"), 0);
-        this.getComponent(0).addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent event) {
-                super.mouseClicked(event);
-                frame.getMediaPlayer().nextSong();
-            }
-        });
+//        this.add(new JButton("Next Song"), 0);
+//        this.getComponent(0).addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent event) {
+//                super.mouseClicked(event);
+//                frame.getMediaPlayer().nextSong();
+//            }
+//        });
     }
 
     public void showMessage(String message) {
         JOptionPane pane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE);
         JDialog dialog = pane.createDialog(frame, "Message");
         dialog.setVisible(true);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        dialog.setVisible(false);
     }
 
-    public void paint(Graphics g) {
+    public void paintComponent(Graphics g) {
         frame.drawBoard(g);
     }
 

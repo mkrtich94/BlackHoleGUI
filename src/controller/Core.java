@@ -98,6 +98,7 @@ public class Core {
     private void getNextMove() {
         if (getMaxAvailable(itemNumbers) == 0) { // Quit
             board.executeCommand(Color.BLACK, null, "Quit");
+            return;
         }
         int maxPotential = 99;
         int potentialIndex = 99;
@@ -225,7 +226,7 @@ public class Core {
         itemNumbers[maxAvailable - 1] = 0;
         int index = findTileWithLowWinningPotentialAndEmptyNeighbour();
         if (index == 99) {
-            return findEmpty(value);
+            return findEmptyTileWithLeastWinningPotential(value);
         } else {
             index = hasEmptyNeighbour(index);
             triangle[index] = value;
@@ -235,7 +236,12 @@ public class Core {
 
     }
 
-    private String findEmpty(int value) {
+    private String findEmptyTileWithLeastWinningPotential(int value) {
+//        for(int i=0; i<8; ++i) {
+//            for(int j=0; i<8-i; ++j) {
+//
+//            }
+//        }
         int letter = 0;
         int z = 0;
         while (true) {
