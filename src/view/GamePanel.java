@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
-import java.util.Random;
 
 public class GamePanel extends JPanel {
     public GameFrame frame;
@@ -40,7 +39,7 @@ public class GamePanel extends JPanel {
                     if (tile.getShape().contains(event.getPoint()) && frame.board.isPlayersTurn) {
                         if (!tile.getIsFilled()) {
                             Disk selectedDisk = frame.board.getDiskPane().getSelected();
-                            if(selectedDisk != null) {
+                            if (selectedDisk != null) {
                                 frame.board.isPlayersTurn = false;
                                 frame.board.answer(selectedDisk, tile.getLabel());
                             } else {

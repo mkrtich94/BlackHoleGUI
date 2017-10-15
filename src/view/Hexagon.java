@@ -4,12 +4,12 @@ import java.awt.*;
 
 public class Hexagon {
 
-    double outerRadius;
-    double innerRadius;
-    Shape shape;
+    private double outerRadius;
+    private double innerRadius;
+    private Shape shape;
 
     public Hexagon(double centerX, double centerY, double radius, boolean isOuterRadius) {
-        if(isOuterRadius) {
+        if (isOuterRadius) {
             this.outerRadius = radius;
             this.innerRadius = outerRadius * Math.sqrt(3) / 2;
         } else {

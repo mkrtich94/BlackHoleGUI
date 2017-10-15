@@ -6,14 +6,17 @@ import java.awt.*;
 
 public abstract class Piece {
 
+    static GameBoard board;
+    private Integer number;
+    private Color color;
     public Piece(Integer number, Color color) {
         this.number = number;
         this.color = color;
     }
 
-    static GameBoard board;
-    private Integer number;
-    private Color color;
+    public static void setBoard(GameBoard gameBoard) {
+        board = gameBoard;
+    }
 
     public Integer getNumber() {
         return number;
@@ -31,8 +34,6 @@ public abstract class Piece {
         this.color = color;
     }
 
-    public static void setBoard(GameBoard gameBoard) {
-        board = gameBoard;
-    }
+    public abstract double getRadius();
 
 }

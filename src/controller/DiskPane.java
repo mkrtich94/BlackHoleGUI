@@ -1,23 +1,26 @@
 package controller;
 
+import model.Colors;
 import model.Disk;
+import view.DrawingUtils;
 
+import java.awt.*;
 import java.util.LinkedList;
 
 public class DiskPane {
 
     public LinkedList<Disk> remainingDisks;
 
-    public DiskPane(GameBoard board) {
+    DiskPane(GameBoard board) {
         remainingDisks = new LinkedList<>();
         for(int i=0; i< 15; ++i) {
             remainingDisks.add(new Disk(board.playerColor, i+1));
         }
     }
 
-    public void removeDisk() {
+    void removeSelected() {
         remainingDisks.remove(getSelected());
-        Disk.remaining--;
+        Disk.remaining = remainingDisks.size();
     }
 
     public Disk getSelected() {
@@ -36,5 +39,23 @@ public class DiskPane {
             }
         }
         selectedDisk.setIsSelected(!selectedDisk.getIsSelected());
+    }
+
+    public void drawDisks(Graphics2D graphics2D) {
+        graphics2D.setStroke(new BasicStroke(1.0f));
+        for (int i = 0; i < remainingDisks.size(); i++) {
+            Disk disk = remainingDisks.get(i);
+            graphics2D.setColor(disk.getColor());
+            Shape shape = disk.getShape(i);
+            graphics2D.fill(shape);
+            graphics2D.setColor(Colors.BORDER.getColor());
+            graphics2D.draw(shape);
+            if (disk.getIsSelected() && disk.getColor().equals(Colors.RED.getColor()) || (!disk.getIsSelected() && !disk.getColor().equals(Colors.RED.getColor()))) {
+                graphics2D.setColor(Color.WHITE);
+            } else {
+                graphics2D.setColor(Color.BLACK);
+            }
+            DrawingUtils.drawCenteredString(graphics2D, disk, shape.getBounds2D());
+        }
     }
 }

@@ -3,14 +3,16 @@ package model;
 import java.awt.*;
 
 public enum Colors {
-    RED(0x80, 0x00, 0x00),
-    BLUE(0x7A, 0xAB,0xEB),
-    BROWN(0x8B, 0x45, 0x13);
+    RED(0xE4, 0x33, 0x26),
+    BLUE(0x2F, 0x41, 0xA5),
+    JURY_BROWN(0x69, 0x45, 0x38),
+    EMPTY(0xDD, 0xDD, 0xDD),
+    BORDER(0x34, 0x32, 0x43);
 
     private Color color;
 
-    Colors(int r, int g, int b){
-        this.color = new Color(r,g,b);
+    Colors(int r, int g, int b) {
+        this.color = new Color(r, g, b);
     }
 
     public Color getColor() {

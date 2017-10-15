@@ -88,7 +88,7 @@ public class Core {
                     neighboursMap.get(value).remove((Object) index);
                 }
                 neighboursMap.remove(index);
-                board.executeCommand(Colors.BROWN.getColor(), null, getLabelByIndex(index));
+                board.executeCommand(Colors.JURY_BROWN.getColor(), null, getLabelByIndex(index));
             } else {
                 i = i > 0 ? i - 1 : 0;
             }

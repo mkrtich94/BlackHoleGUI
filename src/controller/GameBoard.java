@@ -1,7 +1,6 @@
 package controller;
 
 import model.Colors;
-//import model.Disk;
 import model.Disk;
 import model.Tile;
 import view.GameFrame;
@@ -12,14 +11,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+//import model.Disk;
+
 public class GameBoard {
     private final GameFrame parentFrame;
     public Map<String, Tile> tileMap;
     public Map<String, ArrayList<Tile>> neighboursMap;
     public Color playerColor;
     public boolean isFinished;
-    private Core game;
     public boolean isPlayersTurn;
+    private Core game;
     private DiskPane diskPane;
 
     public GameBoard(GameFrame gameFrame) {
@@ -105,7 +106,7 @@ public class GameBoard {
             }
         }
         this.isPlayersTurn = true;
-        if(isFinished) {
+        if (isFinished) {
             int score = getScore();
             showScore(String.format("The Score is %d:%d", 75 + score, 75 - score));
         }
@@ -146,7 +147,7 @@ public class GameBoard {
                 break;
             }
         }
-        return  score;
+        return score;
     }
 
     private boolean checkGameEnded() {
@@ -160,7 +161,7 @@ public class GameBoard {
     }
 
     public void answer(Disk disk, String label) {
-        this.diskPane.removeDisk();
+        this.diskPane.removeSelected();
         Tile tile = tileMap.get(label);
         tile.setFilled(true);
         tile.setNumber(disk.getNumber());
@@ -171,7 +172,7 @@ public class GameBoard {
 
     public void start(boolean isPlayerFirst) {
         isPlayersTurn = isPlayerFirst;
-        this.playerColor = !isPlayerFirst? Colors.BLUE.getColor() : Colors.RED.getColor();
+        this.playerColor = !isPlayerFirst ? Colors.BLUE.getColor() : Colors.RED.getColor();
         isFinished = false;
         init();
         if (!isPlayerFirst) {
@@ -182,4 +183,5 @@ public class GameBoard {
     public DiskPane getDiskPane() {
         return diskPane;
     }
+
 }
