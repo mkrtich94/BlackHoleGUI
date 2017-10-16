@@ -45,11 +45,8 @@ public class DiskPane {
         graphics2D.setStroke(new BasicStroke(1.0f));
         for (int i = 0; i < remainingDisks.size(); i++) {
             Disk disk = remainingDisks.get(i);
-            graphics2D.setColor(disk.getColor());
             Shape shape = disk.getShape(i);
-            graphics2D.fill(shape);
-            graphics2D.setColor(Colors.BORDER.getColor());
-            graphics2D.draw(shape);
+            DrawingUtils.drawShapeWithBorder(graphics2D, shape, disk.getColor());
             if (disk.getIsSelected() && disk.getColor().equals(Colors.RED.getColor()) || (!disk.getIsSelected() && !disk.getColor().equals(Colors.RED.getColor()))) {
                 graphics2D.setColor(Color.WHITE);
             } else {

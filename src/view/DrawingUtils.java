@@ -1,5 +1,6 @@
 package view;
 
+import model.Colors;
 import model.Piece;
 
 import java.awt.*;
@@ -13,6 +14,13 @@ public class DrawingUtils {
         double x = rectangle2D.getX() + (rectangle2D.getWidth() - metrics.stringWidth(piece.getNumber().toString())) / 2;
         double y = rectangle2D.getY() + ((rectangle2D.getHeight() - metrics.getHeight()) / 2) + metrics.getAscent();
         graphics2D.drawString(piece.getNumber().toString(), (float) x, (float) y);
+    }
+
+    public static void drawShapeWithBorder(Graphics2D graphics2D, Shape shape, Color color) {
+        graphics2D.setColor(color);
+        graphics2D.fill(shape);
+        graphics2D.setColor(Colors.BORDER.getColor());
+        graphics2D.draw(shape);
     }
 
 }

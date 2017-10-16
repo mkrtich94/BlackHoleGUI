@@ -25,8 +25,6 @@ public class GameFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setBackground(Color.white);
         mediaPlayer = new MediaPlayer();
-//        this.setRootPane(this.gamePanel = new GamePanel(this));
-//        this.getContentPane().add(new SidePane(this), BorderLayout.WEST);
         this.getContentPane().add(this.gamePanel = new GamePanel(this));
         this.menuPanel = new MenuPanel(this);
         this.setGlassPane(this.menuPanel);
@@ -51,7 +49,7 @@ public class GameFrame extends JFrame {
 
     public void showMenu() {
         this.menuPanel.setVisible(true);
-//        this.getMediaPlayer().play(1);
+        this.getMediaPlayer().play(1);
     }
 
     public MediaPlayer getMediaPlayer() {
@@ -66,13 +64,10 @@ public class GameFrame extends JFrame {
         Graphics2D graphics2D = (Graphics2D) graphics;
         for (Tile tile : this.board.tileMap.values()) {
             Shape shape = tile.getShape();
-            graphics2D.setColor(tile.getColor());
-            graphics2D.fill(shape);
             graphics2D.setStroke(new BasicStroke(1.5f));
-            graphics2D.setColor(Colors.BORDER.getColor());
-            graphics2D.draw(shape);
-            graphics2D.setColor(tile.getColor().equals(Colors.RED.getColor()) ? Color.BLACK : Color.WHITE);
+            DrawingUtils.drawShapeWithBorder(graphics2D, shape, tile.getColor());
             if (tile.getNumber() != null) {
+                graphics2D.setColor(tile.getColor().equals(Colors.RED.getColor()) ? Color.BLACK : Color.WHITE);
                 DrawingUtils.drawCenteredString(graphics2D, tile, shape.getBounds2D());
             }
         }
