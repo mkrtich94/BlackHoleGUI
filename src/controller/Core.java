@@ -4,6 +4,9 @@ package controller;
 import model.Colors;
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +14,7 @@ import java.util.Random;
 
 public class Core {
 
+    private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private int[] triangle;
     private int[] potentialValues;
     private int maxAvailable;
@@ -18,10 +22,51 @@ public class Core {
     private GameBoard board;
     private Color color = Colors.BLUE.getColor();
     private Map<Integer, ArrayList<Integer>> neighboursMap;
+    private boolean isWithGUI;
 
+    public Core() {
+        try {
+            isWithGUI = false;
+            prepareBoard();
+            for (int i = 0; i < 5; ++i) {
+                this.registerBrownTile(getIndexByLabel(reader.readLine()));
+            }
+            this.play();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean isCommandValid(String command, int[] numbers) {
+        String[] commandParts = command.split("=");
+        if(command.equals("Start") || command.equals("Quit") ||
+                ((Integer.parseInt(commandParts[1]) < 16 && Integer.parseInt(commandParts[1]) > 0 && numbers[Integer.parseInt(commandParts[1])] != 0)
+                && (neighboursMap.get(getIndexByLabel(commandParts[0])) != null && triangle[getIndexByLabel(commandParts[0])] == 0))) {
+            return true;
+        }
+        return false;
+    }
+
+    private void play() throws IOException {
+        String command = "";
+        int numbers[] = new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+        while (!(command = reader.readLine()).startsWith("Q")) {
+            String[] commandParts = command.split("=");
+            if(isCommandValid(command, numbers)) {
+                if(commandParts.length > 1) {
+                    numbers[Integer.parseInt(commandParts[1])] = 0;
+                }
+                this.executeCommand(command);
+            } else {
+                this.writeToConsole("Quit");
+            }
+        }
+        System.exit(0);
+    }
 
     Core(GameBoard gameBoard) {
         board = gameBoard;
+        isWithGUI = true;
         prepareBoard();
     }
 
@@ -73,7 +118,9 @@ public class Core {
         triangle = new int[64];
         potentialValues = new int[64];
         prepareNeighboursMap();
-        prepareBrownTiles();
+        if (isWithGUI) {
+            prepareBrownTiles();
+        }
     }
 
     private void prepareBrownTiles() {
@@ -82,22 +129,41 @@ public class Core {
             int letter = random.nextInt(7);
             int number = random.nextInt(7 - letter);
             if (triangle[letter * 8 + number] != 99) {
-                triangle[letter * 8 + number] = 99;
-                int index = letter * 8 + number;
-                for (int value : neighboursMap.get(index)) {
-                    neighboursMap.get(value).remove((Object) index);
-                }
-                neighboursMap.remove(index);
-                board.executeCommand(Colors.JURY_BROWN.getColor(), null, getLabelByIndex(index));
+                this.registerBrownTile(letter * 8 + number);
+                board.executeCommand(Colors.JURY_BROWN.getColor(), null, getLabelByIndex(letter * 8 + number));
             } else {
                 i = i > 0 ? i - 1 : 0;
             }
         }
     }
 
+    private void registerBrownTile(int index) {
+        if (index / 8 > 7 || index % 8 > 8 - index / 8 || triangle[index] == 99) {
+            this.writeToConsole("Quit");
+            System.exit(0);
+        }
+        triangle[index] = 99;
+        for (int value : neighboursMap.get(index)) {
+            neighboursMap.get(value).remove((Object) index);
+        }
+        neighboursMap.remove(index);
+    }
+
+    private void writeToConsole(String command) {
+        System.out.println(command);
+        System.out.flush();
+        if(command.equals("Quit")) {
+            System.exit(0);
+        }
+    }
+
     private void getNextMove() {
         if (getMaxAvailable(itemNumbers) == 0) { // Quit
-            board.executeCommand(Color.BLACK, null, "Quit");
+            if(!isWithGUI) {
+                writeToConsole("Quit");
+            } else {
+                board.executeCommand(Color.BLACK, null, "Quit");
+            }
             return;
         }
         int maxPotential = 99;
@@ -118,11 +184,19 @@ public class Core {
             int neighbourIndexToUse = getNeighbourWithMaximalPotentialRisk(potentialIndex);
             triangle[neighbourIndexToUse] = minRequired;
             analyzeBoardForPotentialRisks();
-            board.executeCommand(color, minRequired, getLabelByIndex(neighbourIndexToUse));
+            if (!isWithGUI) {
+                writeToConsole(getLabelByIndex(neighbourIndexToUse) + "=" + minRequired);
+            } else {
+                board.executeCommand(color, minRequired, getLabelByIndex(neighbourIndexToUse));
+            }
         } else {
             triangle[potentialIndex] = getMinAvailable(0);
             analyzeBoardForPotentialRisks();
-            board.executeCommand(color, triangle[potentialIndex], getLabelByIndex(potentialIndex));
+            if (!isWithGUI) {
+                writeToConsole(getLabelByIndex(potentialIndex) + "=" + triangle[potentialIndex]);
+            } else {
+                board.executeCommand(color, triangle[potentialIndex], getLabelByIndex(potentialIndex));
+            }
         }
     }
 
@@ -130,7 +204,7 @@ public class Core {
         int maxPotential = 99;
         int neighbourIndexWithMaxPotential = hasEmptyNeighbour(index);
         for (Integer neighbourIndexFirstLevel : neighboursMap.get(index)) {
-            if(triangle[neighbourIndexFirstLevel] == 0) {
+            if (triangle[neighbourIndexFirstLevel] == 0) {
                 for (Integer neighbourIndexSecondLevel : neighboursMap.get(neighbourIndexFirstLevel)) {
                     if (maxPotential > potentialValues[neighbourIndexSecondLevel] && index != neighbourIndexSecondLevel) {
                         maxPotential = potentialValues[neighbourIndexSecondLevel];
@@ -160,8 +234,35 @@ public class Core {
     }
 
     private void answer() {
-        String[] command = findBestWinningStrategyAndAnswer().split("=");
-        board.executeCommand(color, command.length == 1 ? null : Integer.valueOf(command[1]), command[0]);
+        String command = findBestWinningStrategyAndAnswer();
+        String[] commandParts = command.split("=");
+        if (!isWithGUI) {
+            if(!command.equals("Quit")) {
+                writeToConsole(command);
+            } else {
+                writeToConsole(this.getScore());
+                System.exit(0);
+            }
+        } else {
+            board.executeCommand(color, commandParts.length == 1 ? null : Integer.valueOf(commandParts[1]), commandParts[0]);
+        }
+    }
+
+    private String getScore() {
+        int score = 0;
+        for(int i=0; i<8; ++i) {
+            for(int j=0; j<8-i; ++j) {
+                if(triangle[8*i+j]==0) {
+                    score = potentialValues[8*i+j];
+                    break;
+                }
+            }
+        }
+        if(this.color.equals(Colors.BLUE.getColor())) {
+            return String.format("The score is : %d-%d", 75-score , 75+score);
+        } else {
+            return String.format("The score is : %d-%d", 75+score , 75-score);
+        }
     }
 
     public void executeCommand(String command) {
@@ -193,7 +294,7 @@ public class Core {
     }
 
     private int hasEmptyNeighbour(int index) {
-        if(neighboursMap.get(index) != null) {
+        if (neighboursMap.get(index) != null) {
             for (Integer neighbourIndex : neighboursMap.get(index)) {
                 if (triangle[neighbourIndex] == 0) {
                     return neighbourIndex;
@@ -220,7 +321,7 @@ public class Core {
 
     private String findBestWinningStrategyAndAnswer() {
         int value = getMaxAvailable(itemNumbers);
-        if(value == 0) {
+        if (value == 0) {
             return "Quit";
         }
         itemNumbers[maxAvailable - 1] = 0;
@@ -237,11 +338,6 @@ public class Core {
     }
 
     private String findEmptyTileWithLeastWinningPotential(int value) {
-//        for(int i=0; i<8; ++i) {
-//            for(int j=0; i<8-i; ++j) {
-//
-//            }
-//        }
         int letter = 0;
         int z = 0;
         while (true) {
@@ -261,6 +357,10 @@ public class Core {
 
     private String getLabelByIndex(int index) {
         return String.valueOf(new char[]{(char) ('A' + index / 8), (char) ('1' + index % 8)});
+    }
+
+    private int getIndexByLabel(String label) {
+        return (label.toCharArray()[0] - 'A')*8 + label.toCharArray()[1] - '1';
     }
 
 }
