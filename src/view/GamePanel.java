@@ -53,14 +53,6 @@ public class GamePanel extends JPanel {
                 }
             }
         });
-//        this.add(new JButton("Next Song"), 0);
-//        this.getComponent(0).addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent event) {
-//                super.mouseClicked(event);
-//                frame.getMediaPlayer().nextSong();
-//            }
-//        });
     }
 
     public void showMessage(String message) {

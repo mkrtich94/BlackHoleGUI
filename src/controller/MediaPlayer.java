@@ -2,78 +2,83 @@ package controller;
 
 import javax.sound.sampled.*;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MediaPlayer {
 
-    List<AudioInputStream> playlist;
+    List<File> playlist;
     Clip clip;
     int currentSong;
     int state; // 0 if stopped, 1 if playing
 
     public MediaPlayer() {
         loadPlaylist();
+        currentSong = 0;
     }
 
-    public void nextSong() {
+    public void playNext() {
         stop();
-        if(currentSong == playlist.size()-2) {
+        if (currentSong == playlist.size()-1) {
             currentSong = 0;
         } else {
             currentSong++;
         }
-        play();
+        play(playlist.get(currentSong));
     }
 
-    public void previousSong() {
-        clip.stop();
-        if(currentSong == 0) {
-            currentSong = playlist.size()-2;
+    public void playPrevious() {
+        stop();
+        if (currentSong == 0) {
+            currentSong = playlist.size() - 1;
         } else {
             currentSong--;
         }
-        clip.start();
+        play(playlist.get(currentSong));
     }
 
     public void play() {
-        try {
-            clip.open(playlist.get(currentSong));
-            clip.setFramePosition(0);
-            clip.start();
-        } catch (LineUnavailableException | IOException e) {
-            e.printStackTrace();
+        if(!clip.isOpen()) {
+            play(playlist.get(currentSong));
         }
     }
 
-    public void stop() {
+    private void stop() {
         clip.close();
         clip.stop();
+    }
+
+    public void play(File file) {
         try {
-            clip = AudioSystem.getClip();
-        } catch (LineUnavailableException e) {
+            stop();
+            clip.open(AudioSystem.getAudioInputStream(file));
+            clip.addLineListener(new LineListener() {
+                @Override
+                public void update(LineEvent event) {
+                    if(event.getType().equals(LineEvent.Type.STOP) && event.getFramePosition() == MediaPlayer.this.clip.getFramePosition()) {
+                        MediaPlayer.this.playNext();
+                    }
+                }
+            });
+            clip.start();
+        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    void loadPlaylist() {
-        playlist = new ArrayList<AudioInputStream>();
+    private void loadPlaylist() {
+        playlist = new ArrayList<File>();
         try {
             this.clip = AudioSystem.getClip();
-            for(int i = 1; i < new File("resources"+ File.separator+"music").listFiles().length; ++i) {
-                playlist.add(AudioSystem.getAudioInputStream(getClass().getClassLoader().getResource("music/" + i + ".wav")));
-            }
-            playlist.add(AudioSystem.getAudioInputStream(getClass().getClassLoader().getResource("music/2.wav")));
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            File[] files = new File(getClass().getClassLoader().getResource("").toURI()).listFiles((FileFilter) file -> file.getName().toLowerCase().endsWith(".wav"));
+            playlist.addAll(Arrays.asList(files));
+        } catch (LineUnavailableException | URISyntaxException e) {
             e.printStackTrace();
         }
-    }
-
-    public void play(int song) {
-        stop();
-        currentSong = song%playlist.size();
-        play();
     }
 
 }

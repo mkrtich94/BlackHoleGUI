@@ -24,7 +24,7 @@ public class GameFrame extends JFrame {
         this.setResizable(true);
         this.setLocationRelativeTo(null);
         this.setBackground(Color.white);
-//        mediaPlayer = new MediaPlayer();
+        mediaPlayer = new MediaPlayer();
         this.getContentPane().add(this.gamePanel = new GamePanel(this));
         this.menuPanel = new MenuPanel(this);
         this.setGlassPane(this.menuPanel);
@@ -49,7 +49,7 @@ public class GameFrame extends JFrame {
 
     public void showMenu() {
         this.menuPanel.setVisible(true);
-//        this.getMediaPlayer().play(1);
+        this.getMediaPlayer().play();
     }
 
     public MediaPlayer getMediaPlayer() {

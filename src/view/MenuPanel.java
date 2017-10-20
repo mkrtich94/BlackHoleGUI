@@ -49,8 +49,11 @@ public class MenuPanel extends JPanel {
                 this.frame.dispose();
             }
         });
+        start.setAlignmentX(CENTER_ALIGNMENT);
         this.add(start);
+        about.setAlignmentX(CENTER_ALIGNMENT);
         this.add(about);
+        exit.setAlignmentX(CENTER_ALIGNMENT);
         this.add(exit);
     }
 
