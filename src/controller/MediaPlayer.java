@@ -11,10 +11,9 @@ import java.util.List;
 
 public class MediaPlayer {
 
-    List<File> playlist;
-    Clip clip;
-    int currentSong;
-    int state; // 0 if stopped, 1 if playing
+    private List<File> playlist;
+    private Clip clip;
+    private int currentSong;
 
     public MediaPlayer() {
         loadPlaylist();
@@ -56,12 +55,9 @@ public class MediaPlayer {
         try {
             stop();
             clip.open(AudioSystem.getAudioInputStream(file));
-            clip.addLineListener(new LineListener() {
-                @Override
-                public void update(LineEvent event) {
-                    if(event.getType().equals(LineEvent.Type.STOP) && event.getFramePosition() == MediaPlayer.this.clip.getFramePosition()) {
-                        MediaPlayer.this.playNext();
-                    }
+            clip.addLineListener(event -> {
+                if(event.getType().equals(LineEvent.Type.STOP) && event.getFramePosition() == MediaPlayer.this.clip.getFramePosition()) {
+                    MediaPlayer.this.playNext();
                 }
             });
             clip.start();
@@ -71,10 +67,10 @@ public class MediaPlayer {
     }
 
     private void loadPlaylist() {
-        playlist = new ArrayList<File>();
+        playlist = new ArrayList<>();
         try {
             this.clip = AudioSystem.getClip();
-            File[] files = new File(getClass().getClassLoader().getResource("").toURI()).listFiles((FileFilter) file -> file.getName().toLowerCase().endsWith(".wav"));
+            File[] files = new File(getClass().getClassLoader().getResource("").toURI()).listFiles(file -> file.getName().toLowerCase().endsWith(".wav"));
             playlist.addAll(Arrays.asList(files));
         } catch (LineUnavailableException | URISyntaxException e) {
             e.printStackTrace();

@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameFrame extends JFrame {
-    private static final int HEIGHT = 800;
+    private static final int HEIGHT = 700;
     private static final int WIDTH = 800;
     public GameBoard board;
     public MenuPanel menuPanel;
@@ -68,9 +68,10 @@ public class GameFrame extends JFrame {
             DrawingUtils.drawShapeWithBorder(graphics2D, shape, tile.getColor());
             if (tile.getNumber() != null) {
                 graphics2D.setColor(tile.getColor().equals(Colors.RED.getColor()) ? Color.BLACK : Color.WHITE);
-                DrawingUtils.drawCenteredString(graphics2D, tile, shape.getBounds2D());
+                DrawingUtils.drawCenteredString(graphics2D, tile.getNumber().toString(), shape.getBounds2D());
             }
         }
         board.getDiskPane().drawDisks(graphics2D);
+//        board.getScorePane().showScore(graphics2D);
     }
 }

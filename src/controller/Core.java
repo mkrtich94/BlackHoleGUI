@@ -23,14 +23,13 @@ public class Core {
     private Color color = Colors.BLUE.getColor();
     private Map<Integer, ArrayList<Integer>> neighboursMap;
     private boolean isWithGUI;
+    private boolean isJuryPresent;
 
-    public Core() {
+    public Core(Map<String, Boolean> attributes) {
         try {
-            isWithGUI = false;
+            isWithGUI = !attributes.get("--no-gui");
+            isJuryPresent = !attributes.get("--no-jury");
             prepareBoard();
-            for (int i = 0; i < 5; ++i) {
-                this.registerBrownTile(getIndexByLabel(reader.readLine()));
-            }
             this.play();
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,7 +48,7 @@ public class Core {
 
     private void play() throws IOException {
         String command = "";
-        int numbers[] = new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+        int numbers[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
         while (!(command = reader.readLine()).startsWith("Q")) {
             String[] commandParts = command.split("=");
             if(isCommandValid(command, numbers)) {
@@ -67,7 +66,11 @@ public class Core {
     Core(GameBoard gameBoard) {
         board = gameBoard;
         isWithGUI = true;
-        prepareBoard();
+        try {
+            prepareBoard();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void prepareNeighboursMap() {
@@ -114,12 +117,16 @@ public class Core {
         }
     }
 
-    private void prepareBoard() {
+    private void prepareBoard() throws IOException {
         triangle = new int[64];
         potentialValues = new int[64];
         prepareNeighboursMap();
-        if (isWithGUI) {
+        if (isWithGUI || isJuryPresent) {
             prepareBrownTiles();
+        } else {
+            for (int i = 0; i < 5; ++i) {
+                this.registerBrownTile(getIndexByLabel(reader.readLine()));
+            }
         }
     }
 
@@ -130,7 +137,12 @@ public class Core {
             int number = random.nextInt(7 - letter);
             if (triangle[letter * 8 + number] != 99) {
                 this.registerBrownTile(letter * 8 + number);
-                board.executeCommand(Colors.JURY_BROWN.getColor(), null, getLabelByIndex(letter * 8 + number));
+                String label = getLabelByIndex(letter * 8 + number);
+                if(isWithGUI) {
+                    board.executeCommand(Colors.JURY_BROWN.getColor(), null, label);
+                } else {
+                    writeToConsole(label);
+                }
             } else {
                 i = i > 0 ? i - 1 : 0;
             }

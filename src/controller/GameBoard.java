@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-//import model.Disk;
-
 public class GameBoard {
     private final GameFrame parentFrame;
     public Map<String, Tile> tileMap;
@@ -108,12 +106,12 @@ public class GameBoard {
         this.isPlayersTurn = true;
         if (isFinished) {
             int score = getScore();
-            showScore(String.format("The Score is %d:%d", 75 + score, 75 - score));
+            String result = String.format("%d : %d", 75 + score, 75 - score);
+            showScore("The Score is " + result);
         }
     }
 
     private void showScore(String score) {
-
         int dialogResult = JOptionPane.showConfirmDialog(this.parentFrame,
                 score + "\nDo you want to play again?",
                 "GameFinished",

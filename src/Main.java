@@ -13,6 +13,8 @@ public class Main {
 
     public static void prepareAttributesMap(String[] attributes) {
         attributesMap = new HashMap<>();
+        attributesMap.put("--no-gui", Boolean.FALSE);
+        attributesMap.put("--no-jury", Boolean.FALSE);
         for(String attribute : attributes) {
             attributesMap.put(attribute.toLowerCase(), Boolean.TRUE);
         }
@@ -21,7 +23,7 @@ public class Main {
     public static void main(String[] args) {
         prepareAttributesMap(args);
         if (Boolean.TRUE.equals(attributesMap.get("--no-gui"))) {
-            core = new Core();
+            core = new Core(attributesMap);
         } else {
             EventQueue.invokeLater(() -> {
                 try {

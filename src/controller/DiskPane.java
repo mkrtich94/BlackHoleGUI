@@ -52,7 +52,7 @@ public class DiskPane {
             } else {
                 graphics2D.setColor(Color.BLACK);
             }
-            DrawingUtils.drawCenteredString(graphics2D, disk, shape.getBounds2D());
+            DrawingUtils.drawCenteredString(graphics2D, disk.getNumber().toString(), shape.getBounds2D());
         }
     }
 }
