@@ -21,7 +21,7 @@ public class MediaPlayer {
 
     public void playNext() {
         stop();
-        if (currentSong == playlist.size()-1) {
+        if (currentSong == playlist.size() - 1) {
             currentSong = 0;
         } else {
             currentSong++;
@@ -40,7 +40,7 @@ public class MediaPlayer {
     }
 
     public void play() {
-        if(!clip.isOpen()) {
+        if (!clip.isOpen()) {
             play(playlist.get(currentSong));
         }
     }
@@ -55,7 +55,7 @@ public class MediaPlayer {
             stop();
             clip.open(AudioSystem.getAudioInputStream(file));
             clip.addLineListener(event -> {
-                if(event.getType().equals(LineEvent.Type.STOP) && event.getFramePosition() == MediaPlayer.this.clip.getFramePosition()) {
+                if (event.getType().equals(LineEvent.Type.STOP) && event.getFramePosition() == MediaPlayer.this.clip.getFramePosition()) {
                     MediaPlayer.this.playNext();
                 }
             });
