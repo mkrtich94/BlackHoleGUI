@@ -33,13 +33,11 @@ public class MenuPanel extends JPanel {
             }
         });
         JButton about = new JButton("About");
-        about.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame,
-                    "Property of Naymada Corp.",
-                    "About",
-                    JOptionPane.INFORMATION_MESSAGE,
-                    companyIcon);
-        });
+        about.addActionListener(e -> JOptionPane.showMessageDialog(frame,
+                "Property of Naymada Corp.",
+                "About",
+                JOptionPane.INFORMATION_MESSAGE,
+                companyIcon));
         JButton exit = new JButton("Exit");
         exit.addActionListener(e -> {
             int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave the game?", "Confirm", JOptionPane.YES_NO_OPTION,

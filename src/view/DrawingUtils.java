@@ -1,8 +1,6 @@
 package view;
 
 import model.Colors;
-import model.Piece;
-
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 

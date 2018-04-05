@@ -2,7 +2,6 @@ package controller;
 
 import javax.sound.sampled.*;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -71,7 +70,9 @@ public class MediaPlayer {
         try {
             this.clip = AudioSystem.getClip();
             File[] files = new File(getClass().getClassLoader().getResource("").toURI()).listFiles(file -> file.getName().toLowerCase().endsWith(".wav"));
-            playlist.addAll(Arrays.asList(files));
+            if (files != null) {
+                playlist.addAll(Arrays.asList(files));
+            }
         } catch (LineUnavailableException | URISyntaxException e) {
             e.printStackTrace();
         }

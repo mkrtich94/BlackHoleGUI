@@ -28,22 +28,16 @@ public class GameFrame extends JFrame {
         this.getContentPane().add(this.gamePanel = new GamePanel(this));
         this.menuPanel = new MenuPanel(this);
         this.setGlassPane(this.menuPanel);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.showMenu();
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(new JMenu("Game"), 0);
         menuBar.getMenu(0).add(new JMenuItem("Restart"), 0);
         menuBar.getMenu(0).add(new JMenuItem("Menu"), 1);
         menuBar.getMenu(0).add(new JMenuItem("Exit"), 2);
-        menuBar.getMenu(0).getItem(0).addActionListener((event) -> {
-            this.board.restart(this.board.playerColor.equals(Colors.RED.getColor()));
-        });
-        menuBar.getMenu(0).getItem(1).addActionListener((event) -> {
-            this.showMenu();
-        });
-        menuBar.getMenu(0).getItem(2).addActionListener((event) -> {
-            this.dispose();
-        });
+        menuBar.getMenu(0).getItem(0).addActionListener((event) -> this.board.restart(this.board.playerColor.equals(Colors.RED.getColor())));
+        menuBar.getMenu(0).getItem(1).addActionListener((event) -> this.showMenu());
+        menuBar.getMenu(0).getItem(2).addActionListener((event) -> this.dispose());
         this.setJMenuBar(menuBar);
     }
 

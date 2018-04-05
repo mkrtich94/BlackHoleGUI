@@ -1,4 +1,5 @@
 import controller.Core;
+import controller.impl.CoreImpl;
 import view.GameFrame;
 
 import javax.swing.*;
@@ -12,9 +13,7 @@ import static java.util.stream.Collectors.toMap;
 
 public class Main {
 
-    private static GameFrame frame;
     private static Map<String, Boolean> attributesMap;
-    private static Core core;
 
     public static void prepareAttributesMap(String[] attributes) {
         attributesMap = new HashMap<>();
@@ -28,7 +27,7 @@ public class Main {
     public static void main(String[] args) {
         prepareAttributesMap(args);
         if (Boolean.TRUE.equals(attributesMap.get("--no-gui"))) {
-            core = new Core(attributesMap);
+            Core core = new CoreImpl(attributesMap);
         } else {
             EventQueue.invokeLater(() -> {
                 try {
@@ -42,7 +41,7 @@ public class Main {
 
     public static void startGame() {
         setLookAndFeel();
-        frame = new GameFrame();
+        GameFrame frame = new GameFrame();
         frame.createBoard();
         frame.setVisible(true);
     }

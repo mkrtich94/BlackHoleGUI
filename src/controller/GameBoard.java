@@ -1,5 +1,6 @@
 package controller;
 
+import controller.impl.CoreImpl;
 import model.Colors;
 import model.Disk;
 import model.Tile;
@@ -37,20 +38,20 @@ public class GameBoard {
         neighboursMap = new HashMap<>();
         for (int i = 0; i < 8; ++i) {
             for (int j = i; j < 8; ++j) {
-                String label = new StringBuilder().append((char) (i + 'A')).append((char) (7 - j + '1')).toString();
+                String label = String.valueOf((char) (i + 'A')) + (char) (7 - j + '1');
                 tileMap.put(label, new Tile(label, 7 - j, 7 - j + i));
                 neighboursMap.put(label, new ArrayList<Tile>());
             }
         }
         this.diskPane = new DiskPane(this);
         prepareNeighboursMap();
-        this.game = new Core(this);
+        this.game = new CoreImpl(this);
     }
 
     private void prepareNeighboursMap() {
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8 - i; ++j) {
-                String label = new StringBuilder().append((char) (i + 'A')).append((char) ('1' + j)).toString();
+                String label = String.valueOf((char) (i + 'A')) + (char) ('1' + j);
                 char info[] = label.toCharArray();
                 String label1 = String.valueOf(new char[]{(char) (info[0] + 1), info[1]});
                 String label2 = String.valueOf(new char[]{info[0], (char) (info[1] + 1)});
@@ -79,7 +80,7 @@ public class GameBoard {
         start(isPlayerFirst);
     }
 
-    void executeCommand(Color color, Integer number, String label) {
+    public void executeCommand(Color color, Integer number, String label) {
         if (!label.equals("Quit")) {
             Tile tile = tileMap.get(label);
             tile.setFilled(true);
