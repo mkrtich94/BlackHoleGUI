@@ -46,11 +46,12 @@ public class Player {
         }
     }
 
+    //TODO error on jar
     private void loadPlaylist() {
         playlist = new ArrayList<>();
         File[] files = new File[0];
         try {
-            files = new File(getClass().getClassLoader().getResource("").toURI()).listFiles(file -> file.getName().toLowerCase().endsWith(".mp3"));
+            files = new File(getClass().getClassLoader().getResource("./").toURI()).listFiles(file -> file.getName().toLowerCase().endsWith(".mp3"));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

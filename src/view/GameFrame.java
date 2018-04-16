@@ -8,6 +8,7 @@ import model.Tile;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class GameFrame extends JFrame {
     private static final int HEIGHT = 700;
@@ -18,7 +19,7 @@ public class GameFrame extends JFrame {
     private Player mediaPlayer;
 
     public GameFrame() throws HeadlessException {
-        ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("icon.png")));
         this.setIconImage(icon.getImage());
         this.setTitle("Black Hole");
         this.setSize(new Dimension(WIDTH, HEIGHT));
