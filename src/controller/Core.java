@@ -1,7 +1,5 @@
 package controller;
 
-import java.awt.*;
-
 public interface Core {
 
     void executeCommand(String command);

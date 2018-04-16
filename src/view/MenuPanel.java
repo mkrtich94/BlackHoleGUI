@@ -1,5 +1,7 @@
 package view;
 
+import javafx.application.Platform;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -14,7 +16,7 @@ public class MenuPanel extends JPanel {
         this.frame = frame;
         JButton start = new JButton("Start");
         Icon dialogIcon = new ImageIcon(frame.getIconImage().getScaledInstance(25, 25, SCALE_SMOOTH));
-        Icon companyIcon = new ImageIcon(getClass().getClassLoader().getResource("company.png"));
+        Icon companyIcon = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("company.png")).getImage().getScaledInstance(75, 50, SCALE_SMOOTH));
         start.addActionListener(e -> {
             Object[] options = {"Red",
                     "Blue"};
@@ -45,6 +47,7 @@ public class MenuPanel extends JPanel {
                     dialogIcon);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 this.frame.dispose();
+                Platform.exit();
             }
         });
         start.setAlignmentX(CENTER_ALIGNMENT);

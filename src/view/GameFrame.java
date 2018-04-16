@@ -1,7 +1,8 @@
 package view;
 
 import controller.GameBoard;
-import controller.MediaPlayer;
+import controller.Player;
+import javafx.application.Platform;
 import model.Colors;
 import model.Tile;
 
@@ -14,7 +15,7 @@ public class GameFrame extends JFrame {
     public GameBoard board;
     public MenuPanel menuPanel;
     public GamePanel gamePanel;
-    private MediaPlayer mediaPlayer;
+    private Player mediaPlayer;
 
     public GameFrame() throws HeadlessException {
         ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
@@ -24,7 +25,7 @@ public class GameFrame extends JFrame {
         this.setResizable(true);
         this.setLocationRelativeTo(null);
         this.setBackground(Color.white);
-        mediaPlayer = new MediaPlayer();
+        mediaPlayer = new Player();
         this.getContentPane().add(this.gamePanel = new GamePanel(this));
         this.menuPanel = new MenuPanel(this);
         this.setGlassPane(this.menuPanel);
@@ -37,7 +38,10 @@ public class GameFrame extends JFrame {
         menuBar.getMenu(0).add(new JMenuItem("Exit"), 2);
         menuBar.getMenu(0).getItem(0).addActionListener((event) -> this.board.restart(this.board.playerColor.equals(Colors.RED.getColor())));
         menuBar.getMenu(0).getItem(1).addActionListener((event) -> this.showMenu());
-        menuBar.getMenu(0).getItem(2).addActionListener((event) -> this.dispose());
+        menuBar.getMenu(0).getItem(2).addActionListener((event) -> {
+            this.dispose();
+            Platform.exit();
+        });
         this.setJMenuBar(menuBar);
     }
 
@@ -46,7 +50,7 @@ public class GameFrame extends JFrame {
         this.getMediaPlayer().play();
     }
 
-    public MediaPlayer getMediaPlayer() {
+    public Player getMediaPlayer() {
         return this.mediaPlayer;
     }
 

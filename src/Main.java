@@ -1,13 +1,17 @@
-import controller.Core;
-import controller.impl.CoreImpl;
-import view.GameFrame;
-
-import javax.swing.*;
-import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import javax.swing.*;
+
+import controller.Core;
+import controller.impl.CoreImpl;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import view.GameFrame;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -29,21 +33,20 @@ public class Main {
         if (Boolean.TRUE.equals(attributesMap.get("--no-gui"))) {
             Core core = new CoreImpl(attributesMap);
         } else {
-            EventQueue.invokeLater(() -> {
-                try {
-                    startGame();
-                } catch (Exception e) {
-                    e.printStackTrace();
+            final JFXPanel fxPanel = new JFXPanel();
+            GameFrame frame = new GameFrame();
+            frame.createBoard();
+            frame.setVisible(true);
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    setLookAndFeel();
+                    StackPane layout = new StackPane();
+                    Scene scene = new Scene(layout, 800, 600);
+                    fxPanel.setScene(scene);
                 }
             });
         }
-    }
-
-    public static void startGame() {
-        setLookAndFeel();
-        GameFrame frame = new GameFrame();
-        frame.createBoard();
-        frame.setVisible(true);
     }
 
     private static void setLookAndFeel() {
