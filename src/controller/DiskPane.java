@@ -1,6 +1,6 @@
 package controller;
 
-import model.Colors;
+import view.Colors;
 import model.Disk;
 import view.DrawingUtils;
 

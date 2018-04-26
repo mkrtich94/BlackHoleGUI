@@ -2,7 +2,7 @@ package controller.impl;
 
 import controller.Core;
 import controller.GameBoard;
-import model.Colors;
+import view.Colors;
 
 import java.awt.*;
 import java.io.BufferedReader;

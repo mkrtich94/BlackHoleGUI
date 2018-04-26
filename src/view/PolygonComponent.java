@@ -1,8 +1,5 @@
 package view;
 
-import model.Colors;
-import model.TextColor;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;

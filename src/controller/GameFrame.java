@@ -1,10 +1,9 @@
-package view;
+package controller;
 
-import controller.GameBoard;
-import controller.MusicPlayer;
 import javafx.application.Platform;
-import model.Colors;
+import view.Colors;
 import model.Tile;
+import view.DrawingUtils;
 
 import javax.swing.*;
 import java.awt.*;

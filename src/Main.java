@@ -11,7 +11,7 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
-import view.GameFrame;
+import controller.GameFrame;
 
 import static java.util.stream.Collectors.toMap;
 

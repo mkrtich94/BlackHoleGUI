@@ -1,10 +1,9 @@
 package controller;
 
 import controller.impl.CoreImpl;
-import model.Colors;
+import view.Colors;
 import model.Disk;
 import model.Tile;
-import view.GameFrame;
 
 import javax.swing.*;
 import java.awt.*;

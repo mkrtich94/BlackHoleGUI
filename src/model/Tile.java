@@ -1,5 +1,6 @@
 package model;
 
+import view.Colors;
 import view.Hexagon;
 
 import java.awt.*;
