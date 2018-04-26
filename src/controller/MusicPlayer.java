@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Player {
+public class MusicPlayer {
 
     private List<File> playlist;
     private MediaPlayer player;
     private int currentSong;
 
-    public Player() {
+    public MusicPlayer() {
         loadPlaylist();
         currentSong = -1;
     }

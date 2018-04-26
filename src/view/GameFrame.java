@@ -1,7 +1,7 @@
 package view;
 
 import controller.GameBoard;
-import controller.Player;
+import controller.MusicPlayer;
 import javafx.application.Platform;
 import model.Colors;
 import model.Tile;
@@ -16,7 +16,7 @@ public class GameFrame extends JFrame {
     public GameBoard board;
     public MenuPanel menuPanel;
     public GamePanel gamePanel;
-    private Player mediaPlayer;
+    private MusicPlayer musicPlayer;
 
     public GameFrame() throws HeadlessException {
         ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("icon.png")));
@@ -26,7 +26,7 @@ public class GameFrame extends JFrame {
         this.setResizable(true);
         this.setLocationRelativeTo(null);
         this.setBackground(Color.white);
-        mediaPlayer = new Player();
+        musicPlayer = new MusicPlayer();
         this.getContentPane().add(this.gamePanel = new GamePanel(this));
         this.menuPanel = new MenuPanel(this);
         this.setGlassPane(this.menuPanel);
@@ -48,11 +48,11 @@ public class GameFrame extends JFrame {
 
     public void showMenu() {
         this.menuPanel.setVisible(true);
-        this.getMediaPlayer().play();
+        this.getMusicPlayer().play();
     }
 
-    public Player getMediaPlayer() {
-        return this.mediaPlayer;
+    public MusicPlayer getMusicPlayer() {
+        return this.musicPlayer;
     }
 
     public void createBoard() {
