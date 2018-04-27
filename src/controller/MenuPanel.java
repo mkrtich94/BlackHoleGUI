@@ -4,6 +4,7 @@ import javafx.application.Platform;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 import static java.awt.Image.SCALE_SMOOTH;
 
@@ -16,7 +17,7 @@ public class MenuPanel extends JPanel {
         this.frame = frame;
         JButton start = new JButton("Start");
         Icon dialogIcon = new ImageIcon(frame.getIconImage().getScaledInstance(25, 25, SCALE_SMOOTH));
-        Icon companyIcon = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("company.png")).getImage().getScaledInstance(75, 50, SCALE_SMOOTH));
+        Icon companyIcon = new ImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("company.png"))).getImage().getScaledInstance(75, 50, SCALE_SMOOTH));
         start.addActionListener(e -> {
             Object[] options = {"Red",
                     "Blue"};

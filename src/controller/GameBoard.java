@@ -39,7 +39,7 @@ public class GameBoard {
             for (int j = i; j < 8; ++j) {
                 String label = String.valueOf((char) (i + 'A')) + (char) (7 - j + '1');
                 tileMap.put(label, new Tile(label, 7 - j, 7 - j + i));
-                neighboursMap.put(label, new ArrayList<Tile>());
+                neighboursMap.put(label, new ArrayList<>());
             }
         }
         this.diskPane = new DiskPane(this);
@@ -95,7 +95,7 @@ public class GameBoard {
         }
         if (label.equals("Quit") || this.checkGameEnded()) {
             for (Tile tile : this.tileMap.values()) {
-                if (!tile.getIsFilled()) {
+                if (tile.isEmpty()) {
                     tile.setColor(Color.BLACK);
                     isFinished = true;
                     this.parentFrame.repaint();
@@ -151,7 +151,7 @@ public class GameBoard {
     private boolean checkGameEnded() {
         int emptyTiles = 0;
         for (Tile tile : this.tileMap.values()) {
-            if (!tile.getIsFilled()) {
+            if (tile.isEmpty()) {
                 emptyTiles++;
             }
         }

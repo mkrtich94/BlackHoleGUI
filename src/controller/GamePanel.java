@@ -37,7 +37,7 @@ public class GamePanel extends JPanel {
                 }
                 for (Tile tile : frame.board.tileMap.values()) {
                     if (tile.getShape().contains(event.getPoint()) && frame.board.isPlayersTurn) {
-                        if (!tile.getIsFilled()) {
+                        if (tile.isEmpty()) {
                             Disk selectedDisk = frame.board.getDiskPane().getSelected();
                             if (selectedDisk != null) {
                                 frame.board.isPlayersTurn = false;

@@ -1,17 +1,16 @@
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
-import javax.swing.*;
-
-import controller.Core;
+import controller.GameFrame;
 import controller.impl.CoreImpl;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
-import controller.GameFrame;
+import sun.awt.OSInfo;
+
+import javax.swing.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -31,20 +30,17 @@ public class Main {
     public static void main(String[] args) {
         prepareAttributesMap(args);
         if (Boolean.TRUE.equals(attributesMap.get("--no-gui"))) {
-            Core core = new CoreImpl(attributesMap);
+            new CoreImpl(attributesMap);
         } else {
+            setLookAndFeel();
             final JFXPanel fxPanel = new JFXPanel();
             GameFrame frame = new GameFrame();
             frame.createBoard();
             frame.setVisible(true);
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    setLookAndFeel();
-                    StackPane layout = new StackPane();
-                    Scene scene = new Scene(layout, 800, 600);
-                    fxPanel.setScene(scene);
-                }
+            Platform.runLater(() -> {
+                StackPane layout = new StackPane();
+                Scene scene = new Scene(layout, 800, 600);
+                fxPanel.setScene(scene);
             });
         }
     }
@@ -55,7 +51,7 @@ public class Main {
 
         String lafClassName = UIManager.getSystemLookAndFeelClassName();
 
-        if (System.getProperty("os.name").contains("Linux") && lookAndFeels.containsKey("GTK+")) {
+        if (OSInfo.getOSType().equals(OSInfo.OSType.LINUX) && lookAndFeels.containsKey("GTK+")) {
             lafClassName = lookAndFeels.get("GTK+").getClassName();
         }
 

@@ -49,12 +49,9 @@ public class CoreImpl implements Core {
 
     private boolean isCommandValid(String command, int[] numbers) {
         String[] commandParts = command.split("=");
-        if (command.equals("Start") || command.equals("Quit") ||
+        return command.equals("Start") || command.equals("Quit") ||
                 ((Integer.parseInt(commandParts[1]) < 16 && Integer.parseInt(commandParts[1]) > 0 && numbers[Integer.parseInt(commandParts[1])] != 0)
-                        && (neighboursMap.get(Core.getIndexByLabel(commandParts[0])) != null && triangle[Core.getIndexByLabel(commandParts[0])] == 0))) {
-            return true;
-        }
-        return false;
+                        && (neighboursMap.get(Core.getIndexByLabel(commandParts[0])) != null && triangle[Core.getIndexByLabel(commandParts[0])] == 0));
     }
 
     private void play() throws IOException {
@@ -79,9 +76,7 @@ public class CoreImpl implements Core {
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8 - i; ++j) {
                 int index = i * 8 + j;
-                if (neighboursMap.get(index) == null) {
-                    neighboursMap.put(index, new ArrayList<Integer>());
-                }
+                neighboursMap.computeIfAbsent(index, k -> new ArrayList<Integer>());
                 int index1 = index + 8;
                 int index2 = index + 1;
                 int index3 = index + 7;
@@ -337,8 +332,8 @@ public class CoreImpl implements Core {
         }
         itemNumbers[maxAvailable - 1] = 0;
 
-        ArrayList<Integer> lonelyTiles = new ArrayList<Integer>();
-        ArrayList<Integer> socialTiles = new ArrayList<Integer>();
+        ArrayList<Integer> lonelyTiles = new ArrayList<>();
+        ArrayList<Integer> socialTiles = new ArrayList<>();
 
         for (Integer index : filterTilesByPotential(findLeastWinningPotential(), false)) {
             if (getEmptyNeighboursCount(index) == 0) {
@@ -384,7 +379,7 @@ public class CoreImpl implements Core {
     }
 
     private ArrayList<Integer> filterTilesByPotential(int potential, boolean onlyTilesWithEmptyNeighbours) {
-        ArrayList<Integer> tiles = new ArrayList<Integer>();
+        ArrayList<Integer> tiles = new ArrayList<>();
         int minPotentialWithNeighbour = 99;
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8 - i; ++j) {
@@ -392,7 +387,7 @@ public class CoreImpl implements Core {
                 if (triangle[index] == 0) {
                     if (potentialValues[index] <= minPotentialWithNeighbour && onlyTilesWithEmptyNeighbours && this.getEmptyNeighboursCount(index) != 0) {
                         if (potentialValues[index] < minPotentialWithNeighbour) {
-                            tiles = new ArrayList<Integer>();
+                            tiles = new ArrayList<>();
                             minPotentialWithNeighbour = potentialValues[index];
                         }
                         tiles.add(index);
@@ -433,8 +428,6 @@ public class CoreImpl implements Core {
 
     /**
      * Method is used to get the next command
-     *
-     * @return
      */
     private void getNextMove() {
         if (getMaxAvailable(itemNumbers) == 0) { // Quit
@@ -493,8 +486,8 @@ public class CoreImpl implements Core {
     }
 
     private void defenseCommand(int maxPotentialRisk) {
-        ArrayList<Integer> lonelyTiles = new ArrayList<Integer>();
-        ArrayList<Integer> socialTiles = new ArrayList<Integer>();
+        ArrayList<Integer> lonelyTiles = new ArrayList<>();
+        ArrayList<Integer> socialTiles = new ArrayList<>();
 
         for (Integer index : filterTilesByPotential(maxPotentialRisk, false)) {
             if (getEmptyNeighboursCount(index) == 0) {

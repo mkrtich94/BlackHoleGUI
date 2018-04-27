@@ -33,8 +33,8 @@ public class Tile extends Piece {
                 , (board.getParentFrame().getSize().height) * 0.1);
     }
 
-    public boolean getIsFilled() {
-        return isFilled;
+    public boolean isEmpty() {
+        return !isFilled;
     }
 
     public String getLabel() {
