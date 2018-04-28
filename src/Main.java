@@ -34,9 +34,7 @@ public class Main {
         } else {
             setLookAndFeel();
             final JFXPanel fxPanel = new JFXPanel();
-            GameFrame frame = new GameFrame();
-            frame.createBoard();
-            frame.setVisible(true);
+            new GameFrame();
             Platform.runLater(() -> {
                 StackPane layout = new StackPane();
                 Scene scene = new Scene(layout, 800, 600);
@@ -67,7 +65,8 @@ public class Main {
             System.out.println("Access exception");
             e.printStackTrace();
         } catch (UnsupportedLookAndFeelException e) {
-            //
+            System.out.println("Unsupported Look And Feel Exception");
+            e.printStackTrace();
         }
     }
 

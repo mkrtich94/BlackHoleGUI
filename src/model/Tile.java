@@ -20,16 +20,16 @@ public class Tile extends Piece {
     }
 
     private double getColumn() {
-        return (10 - row + column * 2) * (double) (board.getParentFrame().getWidth() + board.getParentFrame().gamePanel.getX()) / 22;
+        return (10 - row + column * 2) * (double) (board.getParentFrame().getWidth() + board.getParentFrame().getGamePanel().getX()) / 22;
     }
 
     private double getRow() {
 
-        return (board.getParentFrame().gamePanel.getHeight()) * 0.15 + row * getRadius() * (0.6 + 2 / Math.sqrt(3));
+        return (board.getParentFrame().getGamePanel().getHeight()) * 0.15 + row * getRadius() * (0.6 + 2 / Math.sqrt(3));
     }
 
     public double getRadius() {
-        return Math.min((double) (board.getParentFrame().gamePanel.getWidth() + board.getParentFrame().gamePanel.getX()) / 22
+        return Math.min((double) (board.getParentFrame().getGamePanel().getWidth() + board.getParentFrame().getGamePanel().getX()) / 22
                 , (board.getParentFrame().getSize().height) * 0.1);
     }
 
@@ -39,10 +39,6 @@ public class Tile extends Piece {
 
     public String getLabel() {
         return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public void setFilled(boolean filled) {

@@ -9,6 +9,7 @@ public abstract class Piece {
     static GameBoard board;
     private Integer number;
     private Color color;
+
     Piece(Integer number, Color color) {
         this.number = number;
         this.color = color;

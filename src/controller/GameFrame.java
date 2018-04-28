@@ -12,10 +12,12 @@ import java.util.Objects;
 public class GameFrame extends JFrame {
     private static final int HEIGHT = 700;
     private static final int WIDTH = 800;
-    public GameBoard board;
-    public MenuPanel menuPanel;
-    public GamePanel gamePanel;
+
+    private GameBoard board;
+    private MenuPanel menuPanel;
+    private GamePanel gamePanel;
     private MusicPlayer musicPlayer;
+    private DiskPanel diskPanel;
 
     public GameFrame() throws HeadlessException {
         ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("icon.png")));
@@ -26,8 +28,8 @@ public class GameFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setBackground(Color.white);
         musicPlayer = new MusicPlayer();
-        this.getContentPane().add(this.gamePanel = new GamePanel(this));
-        this.menuPanel = new MenuPanel(this);
+        this.initializePanels();
+        this.getContentPane().add(this.gamePanel);
         this.setGlassPane(this.menuPanel);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.showMenu();
@@ -43,33 +45,42 @@ public class GameFrame extends JFrame {
             Platform.exit();
         });
         this.setJMenuBar(menuBar);
+        this.createBoard();
+        this.setVisible(true);
     }
 
-    public void showMenu() {
+    private void initializePanels() {
+        this.gamePanel = new GamePanel(this);
+        this.menuPanel = new MenuPanel(this);
+        this.diskPanel = new DiskPanel(this);
+    }
+
+    void showMenu() {
         this.menuPanel.setVisible(true);
         this.getMusicPlayer().play();
     }
 
-    public MusicPlayer getMusicPlayer() {
+    private MusicPlayer getMusicPlayer() {
         return this.musicPlayer;
     }
 
-    public void createBoard() {
+    private void createBoard() {
         this.board = new GameBoard(this);
     }
 
-    public void drawBoard(Graphics graphics) {
-        Graphics2D graphics2D = (Graphics2D) graphics;
-        for (Tile tile : this.board.tileMap.values()) {
-            Shape shape = tile.getShape();
-            graphics2D.setStroke(new BasicStroke(1.5f));
-            DrawingUtils.drawShapeWithBorder(graphics2D, shape, tile.getColor());
-            if (tile.getNumber() != null) {
-                graphics2D.setColor(tile.getColor().equals(Colors.RED.getColor()) ? Color.BLACK : Color.WHITE);
-                DrawingUtils.drawCenteredString(graphics2D, tile.getNumber().toString(), shape.getBounds2D());
-            }
-        }
-        board.getDiskPane().drawDisks(graphics2D);
-//        board.getScorePane().showScore(graphics2D);
+    DiskPanel getDiskPanel() {
+        return this.diskPanel;
+    }
+
+    GameBoard getBoard() {
+        return board;
+    }
+
+    MenuPanel getMenuPanel() {
+        return menuPanel;
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
     }
 }

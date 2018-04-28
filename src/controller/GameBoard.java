@@ -1,9 +1,11 @@
 package controller;
 
 import controller.impl.CoreImpl;
+import model.Piece;
 import view.Colors;
 import model.Disk;
 import model.Tile;
+import view.DrawingUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,14 +16,13 @@ import java.util.Map;
 public class GameBoard {
     private final GameFrame parentFrame;
     public Map<String, Tile> tileMap;
-    public Map<String, ArrayList<Tile>> neighboursMap;
-    public Color playerColor;
-    public boolean isFinished;
-    public boolean isPlayersTurn;
+    private Map<String, ArrayList<Tile>> neighboursMap;
+    Color playerColor;
+    boolean isFinished;
+    boolean isPlayersTurn;
     private Core game;
-    private DiskPane diskPane;
 
-    public GameBoard(GameFrame gameFrame) {
+    GameBoard(GameFrame gameFrame) {
         this.parentFrame = gameFrame;
     }
 
@@ -30,9 +31,7 @@ public class GameBoard {
     }
 
     private void init() {
-        Tile.setBoard(this);
-        Disk.setBoard(this);
-        Disk.remaining = 15;
+        Piece.setBoard(this);
         tileMap = new HashMap<>();
         neighboursMap = new HashMap<>();
         for (int i = 0; i < 8; ++i) {
@@ -42,8 +41,8 @@ public class GameBoard {
                 neighboursMap.put(label, new ArrayList<>());
             }
         }
-        this.diskPane = new DiskPane(this);
         prepareNeighboursMap();
+        this.getDiskPanel().init();
         this.game = new CoreImpl(this);
     }
 
@@ -75,7 +74,7 @@ public class GameBoard {
         }
     }
 
-    public void restart(boolean isPlayerFirst) {
+    void restart(boolean isPlayerFirst) {
         start(isPlayerFirst);
     }
 
@@ -158,8 +157,8 @@ public class GameBoard {
         return emptyTiles < 2;
     }
 
-    public void answer(Disk disk, String label) {
-        this.diskPane.removeSelected();
+    void answer(Disk disk, String label) {
+        this.getDiskPanel().removeSelected();
         Tile tile = tileMap.get(label);
         tile.setFilled(true);
         tile.setNumber(disk.getNumber());
@@ -168,7 +167,7 @@ public class GameBoard {
         game.executeCommand(label + "=" + disk.getNumber());
     }
 
-    public void start(boolean isPlayerFirst) {
+    void start(boolean isPlayerFirst) {
         isPlayersTurn = isPlayerFirst;
         this.playerColor = !isPlayerFirst ? Colors.BLUE.getColor() : Colors.RED.getColor();
         isFinished = false;
@@ -178,8 +177,22 @@ public class GameBoard {
         }
     }
 
-    public DiskPane getDiskPane() {
-        return diskPane;
+    DiskPanel getDiskPanel() {
+        return this.getParentFrame().getDiskPanel();
+    }
+
+    void drawBoard(Graphics graphics) {
+        Graphics2D graphics2D = (Graphics2D) graphics;
+        for (Tile tile : this.tileMap.values()) {
+            Shape shape = tile.getShape();
+            graphics2D.setStroke(new BasicStroke(1.5f));
+            DrawingUtils.drawShapeWithBorder(graphics2D, shape, tile.getColor());
+            if (tile.getNumber() != null) {
+                graphics2D.setColor(tile.getColor().equals(Colors.RED.getColor()) ? Color.BLACK : Color.WHITE);
+                DrawingUtils.drawCenteredString(graphics2D, tile.getNumber().toString(), shape.getBounds2D());
+            }
+        }
+        this.getDiskPanel().drawDisks(graphics2D);
     }
 
 }

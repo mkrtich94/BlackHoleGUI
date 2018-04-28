@@ -10,9 +10,9 @@ import static java.awt.Image.SCALE_SMOOTH;
 
 public class MenuPanel extends JPanel {
 
-    public GameFrame frame;
+    private GameFrame frame;
 
-    public MenuPanel(GameFrame frame) {
+    MenuPanel(GameFrame frame) {
         super();
         this.frame = frame;
         JButton start = new JButton("Start");
@@ -59,9 +59,9 @@ public class MenuPanel extends JPanel {
         this.add(exit);
     }
 
-    public void startGame(boolean isPlayerFirst) {
+    private void startGame(boolean isPlayerFirst) {
         this.setVisible(false);
-        frame.board.start(isPlayerFirst);
+        frame.getBoard().start(isPlayerFirst);
     }
 
     @Override
