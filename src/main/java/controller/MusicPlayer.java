@@ -4,7 +4,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,21 +39,16 @@ public class MusicPlayer {
     }
 
     public void stop() {
-        if(player != null) {
+        if (player != null) {
             player.stop();
             player.dispose();
         }
     }
 
-    //TODO error on jar
     private void loadPlaylist() {
         playlist = new ArrayList<>();
-        File[] files = new File[0];
-        try {
-            files = new File(getClass().getClassLoader().getResource("./").toURI()).listFiles(file -> file.getName().toLowerCase().endsWith(".mp3"));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        File musicDir = new File("music");
+        File[] files = musicDir.listFiles(file -> file.getName().toLowerCase().endsWith(".mp3"));
         if (files != null) {
             playlist.addAll(Arrays.asList(files));
         }
