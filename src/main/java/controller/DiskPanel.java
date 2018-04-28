@@ -7,27 +7,23 @@ import view.DrawingUtils;
 import java.awt.*;
 import java.util.LinkedList;
 
-class DiskPanel {
+public class DiskPanel {
 
-    LinkedList<Disk> remainingDisks;
-    private GameFrame frame;
+    public LinkedList<Disk> remainingDisks;
 
-    DiskPanel(GameFrame frame) {
-        this.frame = frame;
+    DiskPanel(GameBoard board) {
+        remainingDisks = new LinkedList<>();
+        for(int i=0; i< 15; ++i) {
+            remainingDisks.add(new Disk(board.playerColor, i+1));
+        }
     }
 
     void removeSelected() {
         remainingDisks.remove(getSelected());
+        Disk.remaining = remainingDisks.size();
     }
 
-    void init() {
-        remainingDisks = new LinkedList<>();
-        for(int i=0; i < 15; ++i) {
-            remainingDisks.add(new Disk(frame.getBoard().playerColor, i+1));
-        }
-    }
-
-    Disk getSelected() {
+    public Disk getSelected() {
         for (Disk disk : remainingDisks) {
             if (disk.getIsSelected()) {
                 return disk;
@@ -36,7 +32,7 @@ class DiskPanel {
         return null;
     }
 
-    void setSelected(Disk selectedDisk) {
+    public void setSelected(Disk selectedDisk) {
         for (Disk disk : remainingDisks) {
             if (!disk.equals(selectedDisk)) {
                 disk.setIsSelected(false);
@@ -45,13 +41,13 @@ class DiskPanel {
         selectedDisk.setIsSelected(!selectedDisk.getIsSelected());
     }
 
-    void drawDisks(Graphics2D graphics2D) {
+    public void drawDisks(Graphics2D graphics2D) {
         graphics2D.setStroke(new BasicStroke(1.0f));
         for (int i = 0; i < remainingDisks.size(); i++) {
             Disk disk = remainingDisks.get(i);
-            Shape shape = disk.getShape(i, remainingDisks.size());
+            Shape shape = disk.getShape(i);
             DrawingUtils.drawShapeWithBorder(graphics2D, shape, disk.getColor());
-            if (disk.getIsSelected() && Colors.RED.getColor().equals(disk.getColor()) || (!disk.getIsSelected() && !Colors.RED.getColor().equals(disk.getColor()))) {
+            if (disk.getIsSelected() && disk.getColor().equals(Colors.RED.getColor()) || (!disk.getIsSelected() && !disk.getColor().equals(Colors.RED.getColor()))) {
                 graphics2D.setColor(Color.WHITE);
             } else {
                 graphics2D.setColor(Color.BLACK);
