@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+//TODO revise nonGUI mode
 public class CoreImpl implements Core {
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -49,25 +50,29 @@ public class CoreImpl implements Core {
 
     private boolean isCommandValid(String command, int[] numbers) {
         String[] commandParts = command.split("=");
-        return command.equals("Start") || command.equals("Quit") ||
-                ((Integer.parseInt(commandParts[1]) < 16 && Integer.parseInt(commandParts[1]) > 0 && numbers[Integer.parseInt(commandParts[1])] != 0)
+        return command.equalsIgnoreCase("Start") || command.equalsIgnoreCase("Quit") || command.split("=").length == 2 &&
+                ((Integer.parseInt(commandParts[1]) < 16 && Integer.parseInt(commandParts[1]) > 0 && numbers[Integer.parseInt(commandParts[1]) - 1] != 0)
                         && (neighboursMap.get(Core.getIndexByLabel(commandParts[0])) != null && triangle[Core.getIndexByLabel(commandParts[0])] == 0));
     }
 
     private void play() throws IOException {
         String command;
         int numbers[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-        while (!(command = reader.readLine()).startsWith("Q")) {
+        int freeTiles = 31;
+        while (freeTiles > 1 && !(command = reader.readLine()).equalsIgnoreCase("Quit")) {
             String[] commandParts = command.split("=");
             if (isCommandValid(command, numbers)) {
                 if (commandParts.length > 1) {
-                    numbers[Integer.parseInt(commandParts[1])] = 0;
+                    numbers[Integer.parseInt(commandParts[1]) - 1] = 0;
+                    freeTiles-=2;
                 }
                 this.executeCommand(command);
             } else {
-                this.writeToConsole("Quit");
+                this.writeToConsole("Invalid command, game will quit");
+                System.exit(0);
             }
         }
+        this.writeToConsole(this.getScore());
         System.exit(0);
     }
 
@@ -220,11 +225,8 @@ public class CoreImpl implements Core {
         String command = findBestWinningStrategyAndAnswer();
         String[] commandParts = command.split("=");
         if (!isWithGUI) {
-            if (!command.equals("Quit")) {
+            if (!command.equalsIgnoreCase("Quit")) {
                 writeToConsole(command);
-            } else {
-                writeToConsole(this.getScore());
-                System.exit(0);
             }
         } else {
             board.executeCommand(color, commandParts.length == 1 ? null : Integer.valueOf(commandParts[1]), commandParts[0]);
@@ -251,9 +253,9 @@ public class CoreImpl implements Core {
     public void executeCommand(String command) {
         char s[];
         int letter, number;
-        if (command.startsWith("S")) {
+        if (command.equalsIgnoreCase("Start")) {
             color = Colors.RED.getColor();
-        } else if (command.startsWith("Q")) {
+        } else if (command.equalsIgnoreCase("Quit")) {
             return;
         } else {
             s = command.toCharArray();

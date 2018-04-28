@@ -2,8 +2,6 @@ package controller;
 
 import javafx.application.Platform;
 import view.Colors;
-import model.Tile;
-import view.DrawingUtils;
 
 import javax.swing.*;
 import java.awt.*;
