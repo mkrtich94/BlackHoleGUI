@@ -1,5 +1,6 @@
 package controller;
 
+import controller.GameFrame;
 import view.Colors;
 import model.Disk;
 import view.DrawingUtils;
@@ -59,4 +60,5 @@ class DiskPanel {
             DrawingUtils.drawCenteredString(graphics2D, disk.getNumber().toString(), shape.getBounds2D());
         }
     }
+
 }
