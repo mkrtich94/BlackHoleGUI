@@ -1,8 +1,7 @@
 package controller;
 
-import controller.GameFrame;
-import view.Colors;
 import model.Disk;
+import view.Colors;
 import view.DrawingUtils;
 
 import java.awt.*;
