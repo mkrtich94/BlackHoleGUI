@@ -20,6 +20,9 @@ public class MusicPlayer {
     }
 
     public void play() {
+        if(playlist.size() == 0) {
+            return;
+        }
         if (player == null || !player.getStatus().equals(MediaPlayer.Status.PLAYING)) {
             playNext();
         }
