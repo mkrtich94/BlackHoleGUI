@@ -81,7 +81,7 @@ public class CoreImpl implements Core {
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8 - i; ++j) {
                 int index = i * 8 + j;
-                neighboursMap.computeIfAbsent(index, k -> new ArrayList<Integer>());
+                neighboursMap.computeIfAbsent(index, k -> new ArrayList<>());
                 int index1 = index + 8;
                 int index2 = index + 1;
                 int index3 = index + 7;
@@ -189,9 +189,7 @@ public class CoreImpl implements Core {
 
     /**
      * Used to get the smallest value bigger than the bound, or the biggest value that is smaller than the bound
-     *
-     * @param bound
-     * @return
+     * @param bound @description shows the min/max bound by favoring larger numbers
      */
     private int getMinAvailable(int bound) {
         int min = 99;
