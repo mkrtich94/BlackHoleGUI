@@ -50,7 +50,14 @@ public class CoreImpl implements Core {
 
     private boolean isCommandValid(String command, int[] numbers) {
         String[] commandParts = command.split("=");
-        return command.equalsIgnoreCase("Start") || command.equalsIgnoreCase("Quit") || command.split("=").length == 2 &&
+        boolean isNewGame = true;
+        for(int number: numbers) {
+            if(number == 0) {
+                isNewGame = false;
+                break;
+            }
+        }
+        return command.equalsIgnoreCase("Start") && isNewGame || command.equalsIgnoreCase("Quit") || command.split("=").length == 2 &&
                 ((Integer.parseInt(commandParts[1]) < 16 && Integer.parseInt(commandParts[1]) > 0 && numbers[Integer.parseInt(commandParts[1]) - 1] != 0)
                         && (neighboursMap.get(Core.getIndexByLabel(commandParts[0])) != null && triangle[Core.getIndexByLabel(commandParts[0])] == 0));
     }
@@ -343,7 +350,7 @@ public class CoreImpl implements Core {
             }
         }
 
-        if (socialTiles.size() == 0) { // TODO: subject for change
+        if (socialTiles.size() == 0) {
             if (!this.socialTilesExist()) {
                 triangle[lonelyTiles.get(0)] = value;
                 analyzeBoardForPotentialRisks();
@@ -448,7 +455,7 @@ public class CoreImpl implements Core {
             }
         }
         if (maxPotentialRisk >= 0) { // attack
-            attackCommand();
+            this.attackCommand();
         } else { // defend
             this.defenseCommand(maxPotentialRisk);
         }
